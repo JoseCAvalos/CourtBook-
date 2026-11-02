@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Rol {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  correo        String   @unique
+  passwordHash  String
+  rolId         Int
+  fechaCreacion DateTime @default(now())
+
+  rol      Rol       @relation(fields: [rolId], references: [id])
+  reservas Reserva[]
+}
+
+model Cancha {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  tipo        String
+  descripcion String?
+  precioHora  Decimal @db.Decimal(10, 2)
+  activa      Boolean @default(true)
+
+  reservas Reserva[]
+}
+
+model EstadoReserva {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique
+  reservas Reserva[]
+}
+
+model Reserva {
+  id            Int      @id @default(autoincrement())
+  usuarioId     Int
+  canchaId      Int
+  estadoId      Int
+  fecha         DateTime @db.Date
+  horaInicio    String
+  horaFin       String
+  fechaCreacion DateTime @default(now())
+
+  usuario Usuario       @relation(fields: [usuarioId], references: [id])
+  cancha  Cancha        @relation(fields: [canchaId], references: [id])
+  estado  EstadoReserva @relation(fields: [estadoId], references: [id])
+
+  @@index([usuarioId])
+  @@index([canchaId])
+  @@index([estadoId])
+  @@index([fecha])
+}

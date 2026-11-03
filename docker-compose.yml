@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: courtbook-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: courtbook
+      POSTGRES_USER: courtbook
+      POSTGRES_PASSWORD: courtbook123
+    volumes:
+      - courtbook_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U courtbook -d courtbook"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: courtbook-backend
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://courtbook:courtbook123@postgres:5432/courtbook
+      JWT_SECRET: courtbook_docker_secret_2026
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+      npx prisma migrate deploy --config prisma7.config.ts &&
+      npm run seed &&
+      npm start
+      "
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: courtbook-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  courtbook_postgres_data:

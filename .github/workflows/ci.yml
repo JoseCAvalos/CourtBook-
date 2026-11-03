@@ -59,6 +59,9 @@ jobs:
 
       - name: Ejecutar pruebas backend
         run: npm test
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/courtbook_test
+          JWT_SECRET: test_secret_courtbook
 
       - name: Compilar backend
         run: npm run build

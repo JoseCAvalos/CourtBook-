@@ -1,5 +1,4 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "${API_URL}";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export async function registrarUsuario(
   nombre: string,
@@ -51,7 +50,7 @@ export async function iniciarSesion(
   return data;
 }
 export async function obtenerCanchas() {
-  const response = await fetch("${API_URL}/canchas");
+  const response = await fetch(`${API_URL}/canchas`);
 
   const data = await response.json();
 
@@ -91,7 +90,7 @@ export async function crearReserva(
   }
 
   const response = await fetch(
-    "${API_URL}/reservas",
+    `${API_URL}/reservas`,
     {
       method: "POST",
       headers: {
@@ -123,7 +122,7 @@ export async function obtenerMisReservas() {
   }
 
   const response = await fetch(
-    "${API_URL}/reservas/mias",
+    `${API_URL}/reservas/mias`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -183,7 +182,7 @@ export async function obtenerReservasAdmin() {
   const token = obtenerToken();
 
   const response = await fetch(
-    "${API_URL}/admin/reservas",
+    `${API_URL}/admin/reservas`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -204,7 +203,7 @@ export async function obtenerUsuariosAdmin() {
   const token = obtenerToken();
 
   const response = await fetch(
-    "${API_URL}/admin/usuarios",
+    `${API_URL}/admin/usuarios`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -259,7 +258,7 @@ export async function crearCanchaAdmin(datos: {
   const token = obtenerToken();
 
   const response = await fetch(
-    "${API_URL}/admin/canchas",
+    `${API_URL}/admin/canchas`,
     {
       method: "POST",
       headers: {

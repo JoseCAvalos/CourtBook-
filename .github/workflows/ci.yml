@@ -57,5 +57,11 @@ jobs:
       - name: Generar Prisma Client
         run: npx prisma generate --config prisma7.config.ts
 
+      - name: Ejecutar pruebas backend
+        run: npm test
+
+      - name: Compilar backend
+        run: npm run build
+
       - name: Compilar backend
         run: npm run build
